@@ -1,12 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose')
+const connectionString = 'mongodb+srv://rudinilly:rudinilly@cluster0.uqwtu.mongodb.net/?retryWrites=true&w=majority'
 const cors = require('cors');
+
+mongoose.connect(connectionString);
 
 const routes = require('./routes');
 
-mongoose.connect('mongodb://localhost:27017/omnistack8', {
-    useNewUrlParser: true
-})
+
 
 
 const server = express();

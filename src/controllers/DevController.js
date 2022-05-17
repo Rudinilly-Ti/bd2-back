@@ -5,7 +5,7 @@ module.exports = {
     async index(req, res) {
         const { user } = req.headers;
 
-        const loggedDev =  await Dev.findById(user);
+        const loggedDev = await Dev.findById(user);
 
         const users = await Dev.find({
             $and: [
@@ -14,7 +14,7 @@ module.exports = {
                 { _id: { $nin: loggedDev.dislikes } }
             ],
         });
-        
+
         return res.json(users)
     },
     async store(req, res) {
@@ -22,21 +22,29 @@ module.exports = {
 
         const userExists = await Dev.findOne({ user: username });
 
-        if(userExists) {
+        if (userExists) {
             return res.json(userExists);
         }
-        
+
         const response = await axios.get(`https://api.github.com/users/${username}`)
-        
+
         const { name, bio, avatar_url: avatar } = response.data;
 
         const dev = await Dev.create({
-            name,
+            name: name ? name : "anonymous",
             user: username,
             bio,
             avatar
         });
 
         return res.json(dev);
+    },
+
+    async delete(req, res) {
+        const { user } = req.headers;
+
+        const del = await Dev.deleteOne(user)
+
+        return res.json(del);
     }
 };
